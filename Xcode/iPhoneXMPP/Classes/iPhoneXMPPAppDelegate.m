@@ -9,6 +9,7 @@
 #import "XMPPRosterCoreDataStorage.h"
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
+#import "XMPPMessageArchivingCoreDataStorage.h"
 
 #import "DDLog.h"
 #import "DDTTYLogger.h"
@@ -22,6 +23,8 @@
 #else
   static const int ddLogLevel = LOG_LEVEL_INFO;
 #endif
+
+#define DDLogVerbose NSLog
 
 
 @interface iPhoneXMPPAppDelegate()
@@ -48,6 +51,7 @@
 @synthesize xmppvCardAvatarModule;
 @synthesize xmppCapabilities;
 @synthesize xmppCapabilitiesStorage;
+@synthesize xmppMessageArchiving;
 
 @synthesize window;
 @synthesize navigationController;
@@ -58,7 +62,7 @@
 {
 	// Configure logging framework
 	
-    [DDLog addLogger:[DDTTYLogger sharedInstance]]; // withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
+	[DDLog addLogger:[DDTTYLogger sharedInstance]]; // withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
 
   // Setup the XMPP stream
   
@@ -192,6 +196,13 @@
     xmppCapabilities.autoFetchHashedCapabilities = YES;
     xmppCapabilities.autoFetchNonHashedCapabilities = NO;
 
+    
+    // Setup Archiving capability
+    XMPPMessageArchivingCoreDataStorage *xmppMessageArchivingStorage = [XMPPMessageArchivingCoreDataStorage sharedInstance];
+    xmppMessageArchiving = [[XMPPMessageArchiving alloc] initWithMessageArchivingStorage:xmppMessageArchivingStorage];
+    // [xmppMessageArchiving setClientSideMessageArchivingOnly:YES];
+
+    
 	// Activate xmpp modules
 
 	[xmppReconnect         activate:xmppStream];
@@ -199,11 +210,13 @@
 	[xmppvCardTempModule   activate:xmppStream];
 	[xmppvCardAvatarModule activate:xmppStream];
 	[xmppCapabilities      activate:xmppStream];
+    [xmppMessageArchiving  activate:xmppStream];
 
 	// Add ourself as a delegate to anything we may be interested in
 
 	[xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
 	[xmppRoster addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [xmppMessageArchiving  addDelegate:self delegateQueue:dispatch_get_main_queue()];
 
 	// Optional:
 	// 
@@ -219,6 +232,8 @@
 //	[xmppStream setHostName:@"talk.google.com"];
 //	[xmppStream setHostPort:5222];	
 	
+//    [xmppStream setHostName:@"eh-chat1.prod.dc1.eharmony.com"];
+//    [xmppStream setHostPort:5222];
 
 	// You may need to alter these settings depending on the server you're connecting to
 	customCertEvaluation = YES;
@@ -228,12 +243,14 @@
 {
 	[xmppStream removeDelegate:self];
 	[xmppRoster removeDelegate:self];
+    [xmppMessageArchiving removeDelegate:self];
 	
 	[xmppReconnect         deactivate];
 	[xmppRoster            deactivate];
 	[xmppvCardTempModule   deactivate];
 	[xmppvCardAvatarModule deactivate];
 	[xmppCapabilities      deactivate];
+    [xmppMessageArchiving  deactivate];
 	
 	[xmppStream disconnect];
 	
@@ -246,6 +263,7 @@
 	xmppvCardAvatarModule = nil;
 	xmppCapabilities = nil;
 	xmppCapabilitiesStorage = nil;
+    xmppMessageArchiving = nil;
 }
 
 // It's easy to create XML elments to send and to read received XML elements.
@@ -297,6 +315,8 @@
 
 	NSString *myJID = [[NSUserDefaults standardUserDefaults] stringForKey:kXMPPmyJID];
 	NSString *myPassword = [[NSUserDefaults standardUserDefaults] stringForKey:kXMPPmyPassword];
+//    NSString *myJID = @"66302577@eh-chat1.prod.dc1.eharmony.com";
+//    NSString *myPassword = [[NSUserDefaults standardUserDefaults] stringForKey:kXMPPmyPassword];
 
 	//
 	// If you don't want to use the Settings view to set the JID, 
@@ -481,6 +501,7 @@
 	{
 		DDLogError(@"Error authenticating: %@", error);
 	}
+    
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
@@ -519,12 +540,12 @@
 
 		if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
 		{
-			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
-															  message:body 
-															 delegate:nil 
-													cancelButtonTitle:@"Ok" 
-													otherButtonTitles:nil];
-			[alertView show];
+//			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
+//															  message:body 
+//															 delegate:nil 
+//													cancelButtonTitle:@"Ok" 
+//													otherButtonTitles:nil];
+//			[alertView show];
 		}
 		else
 		{
@@ -603,6 +624,26 @@
 		[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
 	}
 	
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark XMPPStreamDelegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message
+{
+    // do nothing
+}
+
+#pragma mark Send messages
+- (void)sendMessage: (NSString *)text fromUser: (NSString *)userId;
+{
+    
+    XMPPJID *recepient = [XMPPJID jidWithString:userId];
+    XMPPMessage *message = [[XMPPMessage alloc] initWithType:@"chat" to:recepient elementID:[[self xmppStream] generateUUID]];
+    [message addBody:text];
+    
+	[[self xmppStream] sendElement:message];
 }
 
 @end

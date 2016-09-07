@@ -7,5 +7,6 @@ target 'iPhoneXMPP' do
 
   pod "XMPPFramework", :path => "../../"
   pod 'KissXML/SwiftNSXML', '~> 5.1.2'
-
+  pod 'JSQMessagesViewController'
+  
 end

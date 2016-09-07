@@ -28,6 +28,8 @@
 		DC26A52D152A3E82004B71C0 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC26A52C152A3E82004B71C0 /* Security.framework */; };
 		DC84BC1812440C500055A459 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC84BC1712440C500055A459 /* libidn.a */; };
 		DCD4944312234A49004BEE1A /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD4944212234A49004BEE1A /* libresolv.dylib */; };
+		FA6311051D74BDB8003418F3 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6311041D74BDB8003418F3 /* ChatViewController.m */; };
+		FAC4F5FD1D77A73600493A33 /* ChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAC4F5FC1D77A73600493A33 /* ChatViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,9 @@
 		DC84BC1712440C500055A459 /* libidn.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libidn.a; path = ../../Vendor/libidn/libidn.a; sourceTree = SOURCE_ROOT; };
 		DCD4944212234A49004BEE1A /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		DCE11268140C5798007A2A46 /* XMPPFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPFramework.h; path = Classes/XMPPFramework.h; sourceTree = "<group>"; };
+		FA6311031D74BDB8003418F3 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
+		FA6311041D74BDB8003418F3 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
+		FAC4F5FC1D77A73600493A33 /* ChatViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChatViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +101,8 @@
 				0704FFC5134794020092A737 /* SettingsViewController.h */,
 				0704FFC6134794020092A737 /* SettingsViewController.m */,
 				0704FFC7134794020092A737 /* SettingsViewController.xib */,
+				FA6311031D74BDB8003418F3 /* ChatViewController.h */,
+				FA6311041D74BDB8003418F3 /* ChatViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -139,6 +146,7 @@
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* iPhoneXMPP-Info.plist */,
+				FAC4F5FC1D77A73600493A33 /* ChatViewController.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -239,6 +247,7 @@
 			files = (
 				28AD73600D9D9599002E5188 /* MainWindow.xib in Resources */,
 				28F335F11007B36200424DE2 /* RootViewController.xib in Resources */,
+				FAC4F5FD1D77A73600493A33 /* ChatViewController.xib in Resources */,
 				0704FFC9134794020092A737 /* SettingsViewController.xib in Resources */,
 				070400451347CB140092A737 /* defaultPerson.png in Resources */,
 				DC19DDA1170B4138000D2178 /* Default-568h@2x.png in Resources */,
@@ -302,6 +311,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* iPhoneXMPPAppDelegate.m in Sources */,
+				FA6311051D74BDB8003418F3 /* ChatViewController.m in Sources */,
 				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
 				0704FFC8134794020092A737 /* SettingsViewController.m in Sources */,
 			);

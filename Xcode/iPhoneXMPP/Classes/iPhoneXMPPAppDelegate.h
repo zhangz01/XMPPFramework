@@ -2,11 +2,12 @@
 #import <CoreData/CoreData.h>
 
 #import "XMPPFramework.h"
+#import "XMPPMessageArchiving.h"
 
 @class SettingsViewController;
+@class JSQMessage;
 
-
-@interface iPhoneXMPPAppDelegate : NSObject <UIApplicationDelegate, XMPPRosterDelegate>
+@interface iPhoneXMPPAppDelegate : NSObject <UIApplicationDelegate, XMPPRosterDelegate, XMPPStreamDelegate>
 {
 	XMPPStream *xmppStream;
 	XMPPReconnect *xmppReconnect;
@@ -17,7 +18,8 @@
 	XMPPvCardAvatarModule *xmppvCardAvatarModule;
 	XMPPCapabilities *xmppCapabilities;
 	XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
-	
+    XMPPMessageArchiving *xmppMessageArchiving;
+    
 	NSString *password;
 	
 	BOOL customCertEvaluation;
@@ -38,6 +40,7 @@
 @property (nonatomic, strong, readonly) XMPPvCardAvatarModule *xmppvCardAvatarModule;
 @property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
 @property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
+@property (nonatomic, strong, readonly) XMPPMessageArchiving *xmppMessageArchiving;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 @property (nonatomic, strong) IBOutlet UINavigationController *navigationController;
@@ -50,4 +53,5 @@
 - (BOOL)connect;
 - (void)disconnect;
 
+- (void)sendMessage: (NSString *)text fromUser: (NSString *)userId;
 @end

@@ -10,6 +10,9 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.3.0):
     - CocoaLumberjack/Default
+  - JSQMessagesViewController (7.3.4):
+    - JSQSystemSoundPlayer (~> 2.0.1)
+  - JSQSystemSoundPlayer (2.0.1)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
@@ -178,6 +181,7 @@ PODS:
     - XMPPFramework/XEP-0203
 
 DEPENDENCIES:
+  - JSQMessagesViewController
   - KissXML/SwiftNSXML (~> 5.1.2)
   - XMPPFramework (from `../../`)
 
@@ -188,9 +192,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CocoaAsyncSocket: 3baeb1ddd969f81cf9fca81053ae49ef2d1cbbfa
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
+  JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   XMPPFramework: 977eef5d00c20fe9fb19c30d84a89c2d5564252d
 
-PODFILE CHECKSUM: 44390cec1455072290dd663f42bec34593e6e9a1
+PODFILE CHECKSUM: 1ea353f9b49831d68c8077baffd92a1bb7767c14
 
 COCOAPODS: 1.0.0

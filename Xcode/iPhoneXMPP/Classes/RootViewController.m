@@ -1,6 +1,8 @@
 #import "RootViewController.h"
 #import "iPhoneXMPPAppDelegate.h"
 #import "SettingsViewController.h"
+#import "XMPPMessageArchivingCoreDataStorage.h"
+#import "ChatViewController.h"
 
 #import "XMPPFramework.h"
 #import "DDLog.h"
@@ -39,13 +41,14 @@
 	titleLabel.adjustsFontSizeToFitWidth = YES;
 	titleLabel.textAlignment = NSTextAlignmentCenter;
 
-	if ([[self appDelegate] connect]) 
-	{
-		titleLabel.text = [[[[self appDelegate] xmppStream] myJID] bare];
-	} else
-	{
-		titleLabel.text = @"No JID";
-	}
+    titleLabel.text = [[[[self appDelegate] xmppStream] myJID] bare];
+//	if ([[self appDelegate] connect])
+//	{
+//		titleLabel.text = [[[[self appDelegate] xmppStream] myJID] bare];
+//	} else
+//	{
+//		titleLabel.text = @"No JID";
+//	}
 	
 	[titleLabel sizeToFit];
 
@@ -54,8 +57,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[[self appDelegate] disconnect];
-	[[[self appDelegate] xmppvCardTempModule] removeDelegate:self];
+//	[[self appDelegate] disconnect];
+//	[[[self appDelegate] xmppvCardTempModule] removeDelegate:self];
 	
 	[super viewWillDisappear:animated];
 }
@@ -198,6 +201,71 @@
 - (IBAction)settings:(id)sender
 {
 	[self.navigationController presentViewController:[[self appDelegate] settingsViewController] animated:YES completion:NULL];
+}
+
+
+#pragma mark UITableView delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMPPJID *userId = [[[self appDelegate] xmppStream] myJID];
+    
+    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    ChatViewController *chatVC = [[ChatViewController alloc] initWithNibName:@"ChatViewController" bundle:nil];
+//    chatVC.senderId = user.jidStr;
+//    chatVC.senderDisplayName = user.displayName;
+    chatVC.senderId = userId.bare;
+    chatVC.senderDisplayName = userId.full;
+    chatVC.user = user;
+    
+    XMPPJID *userId2 = [XMPPJID jidWithString:user.jidStr];
+    
+    [self.navigationController pushViewController:chatVC animated:YES];
+
+    
+    // Setup message archiving
+    
+    /*
+    request.predicate = predicate
+    request.entity = entityDescription
+    
+    do {
+        let results = try moc?.executeFetchRequest(request)
+        
+        for message in results! {
+            var element: DDXMLElement!
+            do {
+                element = try DDXMLElement(XMLString: message.messageStr)
+            } catch _ {
+                element = nil
+            }
+            
+            let body: String
+            let sender: String
+            let date: NSDate
+            
+            date = message.timestamp
+            
+            if message.body() != nil {
+                body = message.body()
+            } else {
+                body = ""
+            }
+            
+            if element.attributeStringValueForName("to") == jid {
+                let displayName = OneChat.sharedInstance.xmppStream?.myJID
+                sender = displayName!.bare()
+            } else {
+                sender = jid
+            }
+            
+            let fullMessage = JSQMessage(senderId: sender, senderDisplayName: sender, date: date, text: body)
+            retrievedMessages.addObject(fullMessage)
+        }
+    } catch _ {
+        //catch fetch error here
+    }
+    return retrievedMessages
+    */
 }
 
 @end
