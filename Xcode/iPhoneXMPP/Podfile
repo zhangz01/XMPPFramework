@@ -6,6 +6,6 @@ use_frameworks!
 target 'iPhoneXMPP' do
 
   pod "XMPPFramework", :path => "../../"
-  pod 'KissXML/SwiftNSXML', '~> 5.1.2'
+  #  pod 'KissXML/SwiftNSXML', '~> 5.1.2'
 
 end

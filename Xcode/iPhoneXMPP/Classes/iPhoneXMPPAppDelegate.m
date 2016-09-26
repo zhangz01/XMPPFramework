@@ -12,13 +12,13 @@
 
 #import "DDLog.h"
 #import "DDTTYLogger.h"
-#import "XMPPLogging.h"
+//#import "XMPPLogging.h"
 
 #import <CFNetwork/CFNetwork.h>
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
-  static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+  static const int ddLogLevel = DDLogLevelVerbose;
 #else
   static const int ddLogLevel = LOG_LEVEL_INFO;
 #endif

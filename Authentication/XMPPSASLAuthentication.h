@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-@import KissXML;
+#import "KissXML.h"
 
 @class XMPPStream;
 
