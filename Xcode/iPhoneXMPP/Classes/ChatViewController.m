@@ -42,7 +42,7 @@
         
         JSQMessage *jsqm = [[JSQMessage alloc] initWithSenderId:(message.isOutgoing? self.senderId:message.bareJidStr) senderDisplayName:(message.isOutgoing? self.senderId:message.bareJidStr) date:message.timestamp text:message.body];
         [self.messages addObject:jsqm];
-    }    
+    }
 }
 
 #pragma mark - UICollectionView DataSource
@@ -53,8 +53,9 @@
 
 - (UICollectionViewCell*)collectionView:(JSQMessagesCollectionView*)collectionView cellForItemAtIndexPath:(NSIndexPath*)indexPath
 {
-    JSQMessagesCollectionViewCell* cell = (JSQMessagesCollectionViewCell*)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     JSQMessage* msg = [self.messages objectAtIndex:indexPath.item];
+
+    JSQMessagesCollectionViewCell* cell = (JSQMessagesCollectionViewCell*)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     
     printf("msg user id: %s  self user id: %s msg: %s\n", msg.senderId.UTF8String, self.senderId.UTF8String, msg.text.UTF8String);
     
@@ -66,8 +67,6 @@
             cell.textView.textColor = [UIColor whiteColor];
         }
     }
-    
-    
     return cell;
 }
 
