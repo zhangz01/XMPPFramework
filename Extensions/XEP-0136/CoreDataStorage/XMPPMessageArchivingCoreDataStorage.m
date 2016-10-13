@@ -192,6 +192,51 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 	return result;
 }
 
+/************************
+ * EH Update
+ * Add functionality to retrieve the original message by message Id, and update result
+ * This is used when reply to a CEQ or received answers to a CEQ
+ ************************/
+- (XMPPMessageArchiving_Message_CoreDataObject *)composingMessageWithJid:(XMPPJID *)messageJid
+                                                               streamJid:(XMPPJID *)streamJid
+                                                               messageId:(NSString *)messageId
+                                                    managedObjectContext:(NSManagedObjectContext *)moc
+{
+    if (messageId.length <= 0)
+    {
+        return nil;
+    }
+        
+    XMPPMessageArchiving_Message_CoreDataObject *result = nil;
+    NSEntityDescription *messageEntity = [self messageEntity:moc];
+    
+    NSString *predicateFrmt = @"bareJidStr == %@ AND streamBareJidStr == %@ AND messageId == %@ ";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFrmt,
+                              [messageJid bare], [streamJid bare], messageId];
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"timestamp" ascending:NO];
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    fetchRequest.entity = messageEntity;
+    fetchRequest.predicate = predicate;
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
+    
+    if (results == nil || error)
+    {
+        XMPPLogError(@"%@: %@ - Error executing fetchRequest: %@", THIS_FILE, THIS_METHOD, fetchRequest);
+    }
+    else
+    {
+        result = (XMPPMessageArchiving_Message_CoreDataObject *)[results lastObject];
+    }
+    
+    return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Public API
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,6 +414,11 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 		XMPPJID *myJid = [self myJIDForXMPPStream:xmppStream];
 		
 		XMPPJID *messageJid = isOutgoing ? [message to] : [message from];
+        
+        /************************
+         * EH Update: Retrieve message ID
+         ************************/
+        NSString *messageId = [[message attributeForName:@"id"] stringValue];
 		
 		// Fetch-n-Update OR Insert new message
 		
@@ -395,8 +445,18 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 			XMPPLogVerbose(@"Previous archivedMessage: %@", archivedMessage);
 			
 			BOOL didCreateNewArchivedMessage = NO;
+            
+            /************************
+             * EH Update: Add functionality to retrieve the original message by message Id, and update result
+             * This is used when reply to a CEQ or received answers to a CEQ
+             ************************/
 			if (archivedMessage == nil)
 			{
+                archivedMessage = [self composingMessageWithJid:messageJid streamJid:myJid messageId:messageId managedObjectContext:moc];
+            }
+            
+            if (archivedMessage == nil)
+            {
 				archivedMessage = (XMPPMessageArchiving_Message_CoreDataObject *)
 					[[NSManagedObject alloc] initWithEntity:[self messageEntity:moc]
 				             insertIntoManagedObjectContext:nil];
@@ -406,6 +466,11 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 			
 			archivedMessage.message = message;
 			archivedMessage.body = messageBody;
+            
+            /************************
+             * EH Update: Save message ID.
+             ************************/
+            archivedMessage.messageId = messageId;
 			
 			archivedMessage.bareJid = [messageJid bareJID];
 			archivedMessage.streamBareJidStr = [myJid bare];
