@@ -424,7 +424,14 @@
 	
 	if ([self shouldArchiveMessage:message outgoing:NO xmppStream:sender])
 	{
-		[xmppMessageArchivingStorage archiveMessage:message outgoing:NO xmppStream:sender];
+        /************************
+         * EH Update: Don't archive for error messages
+         ************************/
+        NSXMLElement *errorNode = [message elementForName:@"error"];
+        if (errorNode == nil)
+        {
+            [xmppMessageArchivingStorage archiveMessage:message outgoing:NO xmppStream:sender];
+        }
 	}
 }
 

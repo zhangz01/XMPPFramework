@@ -3,6 +3,7 @@
 #import "XMPPLogging.h"
 #import "NSXMLElement+XEP_0203.h"
 #import "XMPPMessage+XEP_0085.h"
+#import "XMPPMessage+XEP_0184.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -419,6 +420,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
          * EH Update: Retrieve message ID
          ************************/
         NSString *messageId = [[message attributeForName:@"id"] stringValue];
+        BOOL receiptRequest = [message hasReceiptRequest];
 		
 		// Fetch-n-Update OR Insert new message
 		
@@ -471,7 +473,9 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
              * EH Update: Save message ID.
              ************************/
             archivedMessage.messageId = messageId;
-			
+            archivedMessage.messageStatus = @0;
+            archivedMessage.receiptRequest = @(receiptRequest);
+            
 			archivedMessage.bareJid = [messageJid bareJID];
 			archivedMessage.streamBareJidStr = [myJid bare];
 			

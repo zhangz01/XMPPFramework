@@ -32,6 +32,11 @@
 
 @property (nonatomic, strong) NSString * streamBareJidStr;
 
+@property (nonatomic, strong) NSNumber *messageStatus;
+
+@property (nonatomic, strong) NSNumber *receiptRequest;
+@property (nonatomic, assign) BOOL hasReceiptRequest;       // Convenience property
+
 /**
  * This method is called immediately before the object is inserted into the managedObjectContext.
  * At this point, all normal properties have been set.

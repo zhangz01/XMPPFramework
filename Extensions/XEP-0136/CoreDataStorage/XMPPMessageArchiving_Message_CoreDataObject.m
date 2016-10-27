@@ -24,6 +24,8 @@
 @dynamic composing;
 @dynamic timestamp;
 @dynamic streamBareJidStr;
+@dynamic messageStatus;
+@dynamic receiptRequest;
 
 #pragma mark Transient message
 
@@ -154,6 +156,17 @@
 {
 	self.composing = @(flag);
 }
+
+- (BOOL)hasReceiptRequest
+{
+    return [self.receiptRequest boolValue];
+}
+
+- (void)setHasReceiptRequest:(BOOL)flag
+{
+    self.receiptRequest = @(flag);
+}
+
 
 #pragma mark Hooks
 
