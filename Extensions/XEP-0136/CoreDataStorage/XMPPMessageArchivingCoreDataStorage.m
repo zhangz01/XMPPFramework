@@ -420,7 +420,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
          * EH Update: Retrieve message ID
          ************************/
         NSString *messageId = [[message attributeForName:@"id"] stringValue];
-        BOOL receiptRequest = [message hasReceiptRequest];
+        BOOL receiptRequest = isOutgoing? NO : [message hasReceiptRequest];
 		
 		// Fetch-n-Update OR Insert new message
 		
