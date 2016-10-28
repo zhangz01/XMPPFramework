@@ -414,6 +414,11 @@
 	
 	if ([self shouldArchiveMessage:message outgoing:YES xmppStream:sender])
 	{
+        /************************
+         * EH Update: Remove the sending element upon successful sent
+         ************************/
+        [message removeElementForName:@"sending"];
+        
 		[xmppMessageArchivingStorage archiveMessage:message outgoing:YES xmppStream:sender];
 	}
 }
