@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "XMPP.h"
-
+#import "XMPPMessage+XEP_0085.h"
 
 @interface XMPPMessageArchiving_Message_CoreDataObject : NSManagedObject
 
@@ -32,7 +32,8 @@
 
 @property (nonatomic, strong) NSString * streamBareJidStr;
 
-@property (nonatomic, strong) NSNumber *messageStatus;
+@property (nonatomic, strong) NSNumber *messageState;
+@property (nonatomic, assign) XMPPMessageChatState xmppMessageState;       // Convenience property
 
 @property (nonatomic, strong) NSNumber *receiptRequest;
 @property (nonatomic, assign) BOOL hasReceiptRequest;       // Convenience property

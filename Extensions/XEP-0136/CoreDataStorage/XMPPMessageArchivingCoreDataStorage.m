@@ -198,7 +198,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
  * Add functionality to retrieve the original message by message Id, and update result
  * This is used when reply to a CEQ or received answers to a CEQ
  ************************/
-- (XMPPMessageArchiving_Message_CoreDataObject *)composingMessageWithJid:(XMPPJID *)messageJid
+- (XMPPMessageArchiving_Message_CoreDataObject *)existingMessageWithJid:(XMPPJID *)messageJid
                                                                streamJid:(XMPPJID *)streamJid
                                                                messageId:(NSString *)messageId
                                                     managedObjectContext:(NSManagedObjectContext *)moc
@@ -421,7 +421,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
          ************************/
         NSString *messageId = [[message attributeForName:@"id"] stringValue];
         BOOL receiptRequest = isOutgoing? NO : [message hasReceiptRequest];
-		
+        XMPPMessageChatState messageState = XMPPMessageChatStateDone;
 		// Fetch-n-Update OR Insert new message
 		
 		XMPPMessageArchiving_Message_CoreDataObject *archivedMessage =
@@ -454,7 +454,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
              ************************/
 			if (archivedMessage == nil)
 			{
-                archivedMessage = [self composingMessageWithJid:messageJid streamJid:myJid messageId:messageId managedObjectContext:moc];
+                archivedMessage = [self existingMessageWithJid:messageJid streamJid:myJid messageId:messageId managedObjectContext:moc];
             }
             
             if (archivedMessage == nil)
@@ -466,15 +466,25 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 				didCreateNewArchivedMessage = YES;
 			}
 			
-			archivedMessage.message = message;
-			archivedMessage.body = messageBody;
-            
+            if ([message hasSendingChatState])
+            {
+                messageState = XMPPMessageChatStateSending;
+            }
+
+            if ([message hasErrorChatState])
+            {
+                messageState = XMPPMessageChatStateError;
+            }
+
             /************************
-             * EH Update: Save message ID.
+             * EH Update: Save extra info
              ************************/
             archivedMessage.messageId = messageId;
-            archivedMessage.messageStatus = @0;
+            archivedMessage.messageState = @(messageState);
             archivedMessage.receiptRequest = @(receiptRequest);
+            
+			archivedMessage.message = message;
+			archivedMessage.body = messageBody;
             
 			archivedMessage.bareJid = [messageJid bareJID];
 			archivedMessage.streamBareJidStr = [myJid bare];

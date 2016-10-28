@@ -40,6 +40,15 @@ static NSString *const xmlns_chatstates = @"http://jabber.org/protocol/chatstate
 	return ([self elementForName:@"gone" xmlns:xmlns_chatstates] != nil);
 }
 
+- (BOOL)hasSendingChatState
+{
+    return ([self elementForName:@"sending" xmlns:xmlns_chatstates] != nil);
+}
+
+- (BOOL)hasErrorChatState
+{
+    return ([self elementForName:@"error" xmlns:xmlns_chatstates] != nil);
+}
 
 - (void)addActiveChatState
 {
@@ -66,4 +75,13 @@ static NSString *const xmlns_chatstates = @"http://jabber.org/protocol/chatstate
 	[self addChild:[NSXMLElement elementWithName:@"gone" xmlns:xmlns_chatstates]];
 }
 
+- (void)addSendingChatState
+{
+    [self addChild:[NSXMLElement elementWithName:@"sending" xmlns:xmlns_chatstates]];
+}
+
+- (void)addErrorChatState
+{
+    [self addChild:[NSXMLElement elementWithName:@"error" xmlns:xmlns_chatstates]];
+}
 @end

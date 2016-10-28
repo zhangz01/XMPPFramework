@@ -24,7 +24,7 @@
 @dynamic composing;
 @dynamic timestamp;
 @dynamic streamBareJidStr;
-@dynamic messageStatus;
+@dynamic messageState;
 @dynamic receiptRequest;
 
 #pragma mark Transient message
@@ -133,6 +133,22 @@
 	
 	[self didChangeValueForKey:@"bareJid"];
 	[self didChangeValueForKey:@"bareJidStr"];
+}
+
+- (XMPPMessageChatState) xmppMessageState
+{
+    return (XMPPMessageChatState) [self.messageState integerValue];
+}
+
+- (void)setXmppMessageState:(XMPPMessageChatState )xmppMessageState
+{
+    [self willChangeValueForKey:@"messageState"];
+    [self willChangeValueForKey:@"xmppMessageState"];
+    
+    self.messageState = @(xmppMessageState);
+    
+    [self didChangeValueForKey:@"messageState"];
+    [self didChangeValueForKey:@"xmppMessageState"];
 }
 
 #pragma mark Convenience properties
