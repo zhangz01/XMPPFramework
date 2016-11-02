@@ -466,7 +466,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 				didCreateNewArchivedMessage = YES;
 			}
 			
-            if ([message hasSendingChatState])
+            if (isOutgoing && [message hasSendingChatState])
             {
                 messageState = XMPPMessageChatStateSending;
             }
