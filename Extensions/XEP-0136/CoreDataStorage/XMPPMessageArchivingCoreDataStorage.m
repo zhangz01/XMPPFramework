@@ -35,13 +35,38 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 
 + (instancetype)sharedInstance
 {
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		
-		sharedInstance = [[XMPPMessageArchivingCoreDataStorage alloc] initWithDatabaseFilename:nil storeOptions:nil];
-	});
+    //	static dispatch_once_t onceToken;
+    //	dispatch_once(&onceToken, ^{
+    //        sharedInstance = [[XMPPMessageArchivingCoreDataStorage alloc] initWithDatabaseFilename:nil storeOptions:nil];
+    //		
+    //	});
+    
+    if (sharedInstance == nil)
+    {
+        @synchronized (self)
+        {
+            if (sharedInstance == nil)
+            {
+                sharedInstance = [[XMPPMessageArchivingCoreDataStorage alloc] initWithDatabaseFilename:nil storeOptions:nil];
+            }
+        }
+    }
 	
 	return sharedInstance;
+}
+
++ (void) destroyInstance
+{
+    if (sharedInstance != nil)
+    {
+        @synchronized (self)
+        {
+            if (sharedInstance != nil)
+            {
+                sharedInstance = nil;
+            }
+        }
+    }
 }
 
 /**

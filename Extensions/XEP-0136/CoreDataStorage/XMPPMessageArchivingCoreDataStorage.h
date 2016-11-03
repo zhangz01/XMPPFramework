@@ -32,6 +32,11 @@
 + (instancetype)sharedInstance;
 
 
+/**
+ * Destroy the storage instance to handle logout case
+ */
++ (void) destroyInstance;
+
 @property (strong) NSString *messageEntityName;
 @property (strong) NSString *contactEntityName;
 
